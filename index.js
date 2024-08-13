@@ -143,6 +143,11 @@ app.get("/protected", Auth, (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send('login page website running')
+})
+
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

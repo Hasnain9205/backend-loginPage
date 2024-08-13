@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cors());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.post("/register", async (req, res) => {
   try {

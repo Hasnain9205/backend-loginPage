@@ -30,13 +30,15 @@ app.post("/register", async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = crypto.randomInt(100000, 999999).toString();
-    await sendOtp({ email, otp });
+    const expirationOtp = Date.now() + 2 * 60 * 1000;
+    await sendOtp({ email, otp, expirationOtp });
     const hashedOtp = await bcrypt.hash(otp, 10);
     const user = new User({
       name,
       email,
       password: hashedPassword,
       otp: hashedOtp,
+      expirationOtp,
     });
 
     await user.save();
@@ -77,6 +79,10 @@ app.post("/verify-otp", async (req, res) => {
       res.status(200).json("Otp verified successfully");
     } else {
       res.status(400).json("Invalid OTP");
+    }
+    const currentOtp = Date.now();
+    if (currentOtp > user.expirationOtp) {
+      res.status(400).json({ message: "Expired OTP" });
     }
   } catch (error) {
     console.log("opt verified error", error);

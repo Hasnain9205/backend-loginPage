@@ -26,5 +26,9 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  profileComplete: {
+    type: Boolean,
+    default: false,
+  },
 });
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model("User", userSchema);

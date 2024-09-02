@@ -9,6 +9,7 @@ const cors = require("cors");
 const crypto = require("crypto");
 const sendOtp = require("./middleWare/manageOtp.js");
 const UpdateSchema = require("./models/UpdateSchema.js");
+const nodemailer = require("nodemailer");
 
 require("dotenv").config();
 
@@ -225,6 +226,76 @@ app.get("/protected", Auth, (req, res) => {
     return res.status(201).send("Protected Route");
   } catch (error) {
     return res.status(500).send({ error: error.message });
+  }
+});
+
+app.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const token = jwt.sign({ id: user._id }, process.env.ACCESS_SECRET, {
+      expiresIn: "1d",
+    });
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      secure: true,
+      service: "gmail",
+      auth: {
+        user: process.env.USER_EMAIL,
+        pass: process.env.USER_PASS,
+      },
+    });
+
+    const resetUrl = `http://localhost:5173/reset-password/${user._id}/${token}`;
+
+    const mailOptions = {
+      from: process.env.USER_EMAIL,
+      to: user.email,
+      subject: "Password Reset Request",
+      html: `<p>Your requested a password reset.Click the link below to reset your password:</p>
+      <a href="${resetUrl}">Reset Password</a>
+      <p>This link will expire in 1 hour.</p>`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ error: "nodemailer error" });
+      } else [res.status(200).json({ error: "Email sent:" + info.response })];
+    });
+  } catch (error) {
+    res.status(500).send("Error Password reset");
+  }
+});
+
+app.post("/reset-password/:id/:token", async (req, res) => {
+  const { id, token } = req.params;
+  console.log("token", token);
+  const { newPassword } = req.body;
+
+  try {
+    jwt.verify(token, process.env.ACCESS_SECRET, async (err, decoded) => {
+      if (err) {
+        return res.status(400).json({ error: "Invalid or expired token" });
+      } else {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        const user = await User.findByIdAndUpdate(
+          { _id: id },
+          { password: hashedPassword }
+        );
+        if (!user) {
+          return res.status(400).json({ error: "user not found" });
+        } else {
+          return res
+            .status(200)
+            .json({ message: "Password reset successfully" });
+        }
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "reset password error" });
   }
 });
 

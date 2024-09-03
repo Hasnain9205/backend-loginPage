@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const UserSchema = require("../models/UserSchema");
 const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt");
 
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -55,7 +56,6 @@ exports.resetPassword = async (req, res) => {
         return res.status(400).json({ error: "Invalid or expired token" });
       } else {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
         const user = await UserSchema.findByIdAndUpdate(
           { _id: id },
           { password: hashedPassword }

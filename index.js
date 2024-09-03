@@ -22,10 +22,19 @@ const PORT = process.env.PORT || 4000;
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const passwordRoutes = require("./routes/passwordRoutes");
+const Auth = require("./middleWare/Auth");
 
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/password", passwordRoutes);
+
+app.get("/protected", Auth, (req, res) => {
+  try {
+    return res.status(201).send("Protected Route");
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("backend is running");

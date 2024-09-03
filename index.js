@@ -269,7 +269,9 @@ app.post("/forgot-password", async (req, res) => {
       if (error) {
         console.log(error);
         res.status(500).json({ error: "nodemailer error" });
-      } else [res.status(200).json({ message: "Email sent:" + info.response })];
+      } else {
+        res.status(200).json({ message: "Email sent:" + info.response });
+      }
     });
   } catch (error) {
     res.status(500).send("Error Password reset");

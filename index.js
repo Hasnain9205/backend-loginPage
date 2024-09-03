@@ -242,7 +242,7 @@ app.post("/forgot-password", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: "User not found" });
     const token = jwt.sign({ id: user._id }, process.env.ACCESS_SECRET, {
-      expiresIn: "1d",
+      expiresIn: "1h",
     });
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",

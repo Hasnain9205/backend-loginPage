@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(
   cors({
-    origin: ["https://login-93.netlify.app"],
+    origin: ["https://register22.netlify.app"],
     credentials: true,
   })
 );

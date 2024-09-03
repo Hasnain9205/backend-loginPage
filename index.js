@@ -18,10 +18,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(
   cors({
-    origin: [
-      "https://66d67553e1900097c560ed7a--sensational-cendol-a3597f.netlify.app",
-    ],
-    methods: "GET, POST, PUT, DELETE",
+    origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
@@ -314,7 +311,7 @@ app.post("/reset-password/:id/:token", async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("login page website running");
+  res.send("backend is running");
 });
 
 mongoose

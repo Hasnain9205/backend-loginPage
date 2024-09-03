@@ -20,7 +20,7 @@ exports.forgotPassword = async (req, res) => {
       },
     });
 
-    const resetUrl = `https://register22.netlify.app/reset-password/${user._id}/${token}`;
+    const resetUrl = `https://forgot33.netlify.app/reset-password/${user._id}/${token}`;
 
     const mailOptions = {
       from: process.env.USER_EMAIL,

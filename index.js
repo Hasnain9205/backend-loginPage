@@ -18,14 +18,19 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(
   cors({
-    origin:
+    origin: [
       "https://66d67553e1900097c560ed7a--sensational-cendol-a3597f.netlify.app",
-    methods: "GET,POST,PUT,DELETE",
+    ],
+    methods: "GET, POST, PUT, DELETE",
     credentials: true,
   })
 );
 
 const PORT = process.env.PORT || 4000;
+
+app.get("/test-cors", (req, res) => {
+  res.json({ message: "CORS is working" });
+});
 
 app.post("/register", async (req, res) => {
   try {

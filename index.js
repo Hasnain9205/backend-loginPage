@@ -16,7 +16,14 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 app.use(morgan("tiny"));
-app.use(cors());
+app.use(
+  cors({
+    origin:
+      "https://66d67553e1900097c560ed7a--sensational-cendol-a3597f.netlify.app",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 
 const PORT = process.env.PORT || 4000;
 

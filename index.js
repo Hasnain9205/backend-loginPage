@@ -18,7 +18,9 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "https://66d69732fe0914aa0050f2ad--magical-brioche-278e21.netlify.app",
+    ],
     credentials: true,
   })
 );

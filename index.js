@@ -258,7 +258,7 @@ app.post("/forgot-password", async (req, res) => {
       },
     });
 
-    const resetUrl = `http://localhost:5173/reset-password/${user._id}/${token}`;
+    const resetUrl = `https://66d69732fe0914aa0050f2ad--magical-brioche-278e21.netlify.app/reset-password/${user._id}/${token}`;
 
     const mailOptions = {
       from: process.env.USER_EMAIL,

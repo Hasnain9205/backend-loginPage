@@ -18,9 +18,5 @@ const updateSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  profileComplete: {
-    type: Boolean,
-    default: false,
-  },
 });
 module.exports = mongoose.model("Update-Profile", updateSchema);

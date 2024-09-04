@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const UserSchema = require("../models/UserSchema");
 const sendOtp = require("../middleWare/manageOtp");
+const UpdateSchema = require("../models/UpdateSchema");
 
 exports.register = async (req, res) => {
   try {
@@ -10,7 +11,7 @@ exports.register = async (req, res) => {
     if (!email || !password) {
       return res.status(400).send("Email and password are required");
     }
-    const existingUser = await User.findOne({ email });
+    const existingUser = await UserSchema.findOne({ email });
     if (existingUser) {
       return res.status(400).send("This user already exist");
     }
@@ -25,10 +26,10 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       otp: hashedOtp,
       expirationOtp,
-      profileComplete: false,
     });
 
     await user.save();
+
     const accessToken = jwt.sign(
       {
         id: user._id,
@@ -78,9 +79,10 @@ exports.verifyOtp = async (req, res) => {
     if (isMatchOtp) {
       user.verified = true;
       await user.save();
-      res.status(200).json("Otp verified successfully");
+      const userProfile = !!user.profile;
+      res.status(200).json({ userProfile });
     } else {
-      res.status(400).json("Invalid OTP");
+      res.status(400).json({ message: "Invalid OTP" });
     }
   } catch (error) {
     console.log("opt verified error", error);
@@ -120,8 +122,14 @@ exports.login = async (req, res) => {
       process.env.REFRESH_SECRET,
       { expiresIn: "5d" }
     );
+
+    const userProfile = await UpdateSchema.findOne({ userId: user._id });
+    const updateProfile = !userProfile;
+
     user.password = undefined;
-    return res.status(201).send({ user, accessToken, refreshToken });
+    return res
+      .status(201)
+      .send({ user, accessToken, refreshToken, updateProfile });
   } catch (error) {
     return res.status(500).send({ error: error.message });
   }

@@ -21,7 +21,7 @@ exports.forgotPassword = async (req, res) => {
       },
     });
 
-    const resetUrl = `https://reset-p.netlify.app/reset-password/${user._id}/${token}`;
+    const resetUrl = `https://tubular-pie-61a0ec.netlify.app/reset-password/${user._id}/${token}`;
 
     const mailOptions = {
       from: process.env.USER_EMAIL,
